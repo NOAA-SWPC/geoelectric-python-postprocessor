@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swpc-geoelectric"
+version = "0.1.0"
+description = "NOAA-USGS Geoelectric Field Model Output Formats Exchange"
+readme = "README.md"
+authors = [
+    { name = "J. Guerra", email = "jordan.guerra@noaa.gov" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = [
+    "netCDF4>=1.6.0"
+]
+
+[project.urls]
+Homepage = "https://www.swpc.noaa.gov/products/geoelectric-field-models-1-minute"
+
+[project.scripts]
+swpc-geoelectric = "swpc_geoelectric.cli:main"
