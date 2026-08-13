@@ -18,7 +18,7 @@ NetCDf files from the real-time geoelectric model can be found here: https://ser
 ## Installation
 
 ```shell
-pip install git+ssh://git@gitlab-licensed.vlab.noaa.gov:29418/NWS/Operations/NCEP/SWPC/regional-geoelectric/geoelectric-python-postprocessor.git
+pip install git+ssh://git@github.com/NOAA-SWPC/geoelectric-python-postprocessor.git
 ```
 
 ## Usage
