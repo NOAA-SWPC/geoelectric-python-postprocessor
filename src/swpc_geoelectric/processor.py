@@ -9,7 +9,7 @@ import numpy as np
 
 
 class GeoelectricPostprocessor:
-    """Post-processes NOAA/SWPC-USGS Geoelectric Field NetCDF model outputs into GeoJSON or ASCII data products."""
+    """Post-processing NOAA/SWPC-USGS Geoelectric Field NetCDF model outputs into GeoJSON or ASCII data products."""
 
     def __init__(
         self,
@@ -71,7 +71,7 @@ class GeoelectricPostprocessor:
     def _process_file(self, file_path: Path) -> None:
         with Dataset(file_path, "r", format="NETCDF4") as nc:
             tstamp_var = nc.variables["time"]
-            units = tstamp_var.units
+            units = tstamp_var.UNITS
             calendar = getattr(tstamp_var, "calendar", "standard")
 
             # Standard netCDF4 conversion to Python datetime objects
@@ -99,6 +99,7 @@ class GeoelectricPostprocessor:
             # Spatial grid extraction & lexical sorting
             lons = nc.variables["longitude"][:]
             lats = nc.variables["latitude"][:]
+            distance = nc.variables["distance"][:]
             sort_idx = np.lexsort((lats, lons))
 
             lons = np.ascontiguousarray(lons[sort_idx], dtype=np.float64)
@@ -106,14 +107,15 @@ class GeoelectricPostprocessor:
 
             Ex = nc.variables["Ex"][:][toi_indices][:, sort_idx]
             Ey = nc.variables["Ey"][:][toi_indices][:, sort_idx]
-            emax = nc.variables["Emax"][:][toi_indices]
-            quality = nc.variables["quality"][:][toi_indices][:, sort_idx]
-            distance = np.ascontiguousarray(nc.variables["distance"][:][sort_idx], dtype=np.float64)
+            emax = nc.variables["emax"][:][toi_indices]
+            quality = nc.variables["Quality"][:][toi_indices][:, sort_idx]
+            distance = nc.variables["distance"][:][sort_idx]
             nobs = nc.variables["nobs"][:][toi_indices]
 
             model_type = getattr(nc, "MODEL_TYPE", "unknown")
-            cadence = getattr(nc, "CADENCE", "unknown")
+            cadence = getattr(nc, "CADENCE", "60 seconds")
             ngridpts = str(getattr(nc, "NGRIDPTS", len(lons)))
+            
             file_mtime = datetime.fromtimestamp(file_path.stat().st_mtime)
 
             if self.output_format == "json":
@@ -136,6 +138,9 @@ class GeoelectricPostprocessor:
             ey_row = Ey[i]
             q_row = quality[i]
 
+            ex_row[np.isnan(ex_row)] = 999999.
+            ey_row[np.isnan(ey_row)] = 999999.
+
             features = [
                 {
                     "type": "Feature",
@@ -143,7 +148,7 @@ class GeoelectricPostprocessor:
                     "properties": {
                         "Ex": float(ex_row[j]),
                         "Ey": float(ey_row[j]),
-                        "quality_flag": int(q_row[j]),
+                        "quality_flag": float(q_row[j]),
                         "distance_nearest_station": dists[j],
                     },
                 }
