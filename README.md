@@ -6,7 +6,7 @@ Conversion of geoelectric field output form netCDF to JSON and ASCII files.
 
 This package ingests daily netCDF files from the NOAA-USGS Geoelectric Field Model (https://www.spaceweather.gov/products/geoelectric-field-models-1-minute) and produces geoJSON or ASCII files at one minute cadence.
 
-Retrospective simulations (i.e., science quality) using the NOAA-USGS Geoelectric models have been performed for the selected major geomagnetic storms. NetCDF files can be found here: https://testbed.spaceweather.gov/BES-exercise/major-storm-geoelectric-simulations.
+Retrospective simulations (i.e., science quality) using the NOAA-USGS Geoelectric models have been performed for the selected major geomagnetic storms. NetCDF files can be found here: https://testbed.spaceweather.gov/products/major-storm-geoelectric-simulations
 
 NetCDf files from the real-time geoelectric model can be found here: https://services.swpc.noaa.gov/netcdf/geoelectric/. (Real time output can have unexpected artifacts from the geomagnetic data, use discretion.)
 
